@@ -11,6 +11,8 @@ public interface SrvyEmailTmplService {
 	
 	public int updateEmailTmpl(SrvyEmailTmpl srvyEmailTmpl);
 	
+	public int cloneEmailTmpl(int oldId,SrvyEmailTmpl srvyEmailTmpl);
+	
 	public SrvyEmailTmpl getEmailTmplByID(int srvyEmailTmplId);
 	
 	public ArrayList<SrvyEmailTmpl> getEmailTmplBySrvyRecId(int srvyRecId);

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -236,5 +237,44 @@ public class SrvyEmailTmplDaoImpl implements SrvyEmailTmplDao {
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	@Override
+	public int cloneEmailTmpl(int oldId, SrvyEmailTmpl srvyEmailTmpl) {
+		int last_inserted_id = 0;
+		PreparedStatement preparedStatement = null;
+		Connection conn = null;
+		
+		String sql = "INSERT INTO [dbo].[ESV_SRVY_EMAIL_TMPL]("
+				+"[SRVY_REC_ID],"
+				+"[EMAIL_TYPE]," 
+				+"[EMAIL_SUBJ]," 
+				+"[EMAIL_CNTN]," 
+				+"[LAST_REC_TXN_USER_ID]," 
+				+"[LAST_REC_TXN_TYPE_CODE]," 
+				+"[LAST_REC_TXN_DATE]) SELECT "
+				+ srvyEmailTmpl.getSrvyRecId()+","
+				+ "[EMAIL_TYPE],[EMAIL_SUBJ],[EMAIL_CNTN],"
+				+"'"+srvyEmailTmpl.getLastRecTxnUserId()+"','"+Constant.LAST_REC_TXN_TYPE_CODE_ACTIVE+"',"
+				+ "GETDATE() FROM [dbo].[ESV_SRVY_EMAIL_TMPL] WHERE [SRVY_REC_ID]=?";
+		
+		try {
+			conn = dataSource.getConnection();
+			preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			preparedStatement.setInt(1, oldId);
+			preparedStatement.execute();
+			ResultSet rs = preparedStatement.getGeneratedKeys();
+		if (rs.next()) {
+				last_inserted_id = rs.getInt(1);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+			}
+		}
+		return last_inserted_id;
 	}
 }

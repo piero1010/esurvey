@@ -259,10 +259,15 @@ public class SrvyController extends ViewController {
 		Map<String, String> map = new HashMap<String, String>();
 		SrvyRecService srvyRecService = (SrvyRecService) context.getBean("srvyRecService");
 		SrvyPptService srvyPptService = (SrvyPptService) context.getBean("srvyPptService");
+		SrvyEmailTmplService srvyEmailTmplService = (SrvyEmailTmplService) context.getBean("srvyEmailTmplService");
 		SrvyRec srvyRec = new SrvyRec();
 		srvyRec.setLastRecTxnUserId(CommonFunction.getSsnUserId());
 		srvyRec.setSrvyRecId(Integer.parseInt((String) param.get("srvyRecId")));
 		int newSrvyRecId = srvyRecService.cloneSrvyRec(srvyRec);
+		SrvyEmailTmpl srvyEmailTmpl = new SrvyEmailTmpl();
+		srvyEmailTmpl.setSrvyRecId(newSrvyRecId);
+		srvyEmailTmpl.setLastRecTxnUserId(CommonFunction.getSsnUserId());
+		srvyEmailTmplService.cloneEmailTmpl(Integer.parseInt((String) param.get("srvyRecId")),srvyEmailTmpl);
 		if ("true".equals((String) param.get("isWithPpt"))) {
 			SrvyPpt srvyPpt = new SrvyPpt();
 			srvyPpt.setLastRecTxnUserId(CommonFunction.getSsnUserId());

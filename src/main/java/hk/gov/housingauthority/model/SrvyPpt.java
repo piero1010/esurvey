@@ -112,7 +112,7 @@ public class SrvyPpt extends Record{
 	public String toJsonString() {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 		SimpleDateFormat datetimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		return "[\"\",\"" + user.getUserDivCode() + "\",\"" + user.getUserName() + "\",\"" + user.getUserEmail() + "\",\"" + 
+		return "[\"\",\"" + user.getUserDivCode() + "\",\"" + user.getUserName() +"\",\"" + user.getUserDsgn() + "\",\"" + user.getUserEmail() + "\",\"" + 
 				(invtDate != null ?datetimeFormat.format(invtDate):"") + "\",\"" + (lastRmdrDate != null ?datetimeFormat.format(lastRmdrDate):"") + "\",\"" + (sbmtDate != null ?datetimeFormat.format(sbmtDate):"") + "\",\"" + (sbmtSts==null?"N":"Y") + "\",\"" + user.getUserId() + "\",\"" + srvyPptId + "\","
 						+ "\"" + itSrvcName + "\",\"" + itSrvcCode + "\",\"" + cntrctrName + "\"]";
 	}	

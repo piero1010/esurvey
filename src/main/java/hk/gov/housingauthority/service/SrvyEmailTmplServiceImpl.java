@@ -38,6 +38,11 @@ public class SrvyEmailTmplServiceImpl implements SrvyEmailTmplService {
 	public SrvyEmailTmpl getEmailTmpl(int srvyRecId, String emailType) {
 		return srvyEmailTmplDao.getEmailTmpl(srvyRecId, emailType);
 	}
+
+	@Override
+	public int cloneEmailTmpl(int oldId,SrvyEmailTmpl srvyEmailTmpl) {
+		return srvyEmailTmplDao.cloneEmailTmpl(oldId,srvyEmailTmpl);
+	}
 	
 
 }

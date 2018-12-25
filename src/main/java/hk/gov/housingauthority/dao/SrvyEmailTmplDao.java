@@ -10,6 +10,8 @@ public interface SrvyEmailTmplDao {
 	
 	public int updateEmailTmpl(SrvyEmailTmpl srvyEmailTmpl);
 	
+	public int cloneEmailTmpl(int oldId,SrvyEmailTmpl srvyEmailTmpl);
+	
 	public SrvyEmailTmpl getEmailTmplByID(int srvyEmailTmplId);
 
 	public SrvyEmailTmpl getEmailTmpl(int srvyRecId, String emailType);
