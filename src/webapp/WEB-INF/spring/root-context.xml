@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+    <bean name="autoReminderBatch" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="hk.gov.housingauthority.batch.AutoReminderBatch"/>
+        <property name="durability" value="true" />        
+    </bean>
+
+    <bean name="collectUserBatch" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="hk.gov.housingauthority.batch.CollectUserBatch"/>
+        <property name="durability" value="true" />        
+    </bean>
+
+    <bean name="purgeOldDataBatch" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="hk.gov.housingauthority.batch.PurgeOldDataBatch"/>
+        <property name="durability" value="true" />        
+    </bean>
+    
+     <bean name="sendEmailBatch" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="hk.gov.housingauthority.batch.SendEmailBatch"/>
+        <property name="durability" value="true" />        
+    </bean>
+    
+    <bean name="updateSrvyRecBatch" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="hk.gov.housingauthority.batch.UpdateSrvyRecBatch"/>
+        <property name="durability" value="true" />        
+    </bean>
+		
+	<!-- define triggers -->
+    <bean id="autoReminderTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="autoReminderBatch"/>
+        <property name="cronExpression" value="1 0 0 * * ?" />
+    </bean>
+		
+    <bean id="collectUserTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="collectUserBatch"/>
+        <property name="cronExpression" value="10 0 0 * * ?" />
+    </bean>
+		
+	<bean id="sendEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="sendEmailBatch"/>
+        <property name="cronExpression" value="0 0/5 * * * ?" />
+    </bean>
+    
+    <bean id="updateSrvyRecTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="updateSrvyRecBatch"/>
+        <property name="cronExpression" value="3 0 0 * * ?" />
+    </bean>
+    
+    <bean id="purgeOldDataTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="purgeOldDataBatch"/>
+        <property name="cronExpression" value="6 0 0 * * ?" />
+    </bean>
+		
+	<bean id="scheduleController" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" lazy-init="true">
+        <property name="schedulerName" value="monitorScheduler"/>
+        <property name="triggers">
+            <list>            
+                 <ref bean="autoReminderTrigger"/>
+                 <ref bean="collectUserTrigger"/>
+                 <ref bean="sendEmailTrigger"/>
+                 <ref bean="updateSrvyRecTrigger"/>
+                 <ref bean="purgeOldDataTrigger"/>
+            </list>                
+        </property>
+    </bean>
+    
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property  name="maxUploadSize" value="512000" />
+    </bean>
+    
+</beans>

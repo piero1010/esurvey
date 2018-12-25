@@ -1,0 +1,115 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	<bean id="userDao" class="hk.gov.housingauthority.dao.UserDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="sysCnfgDao" class="hk.gov.housingauthority.dao.SysCnfgDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="coordinatorDao" class="hk.gov.housingauthority.dao.CoordinatorDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="srvyGrpDao" class="hk.gov.housingauthority.dao.SrvyGrpDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="srvyTmplDao" class="hk.gov.housingauthority.dao.SrvyTmplDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="srvyRecDao" class="hk.gov.housingauthority.dao.SrvyRecDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="srvyEmailTmplDao" class="hk.gov.housingauthority.dao.SrvyEmailTmplDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="srvyAdtnInfoDao" class="hk.gov.housingauthority.dao.SrvyAdtnInfoDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="srvyEmailHistDao" class="hk.gov.housingauthority.dao.SrvyEmailHistDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="srvyPptDao" class="hk.gov.housingauthority.dao.SrvyPptDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- bean id="formDataDao" class="hk.gov.housingauthority.dao.FormDataDaoImpl"> 
+		<property name="dataSource" ref="dataSource" /> </bean -->
+	<bean id="mySrvyDao" class="hk.gov.housingauthority.dao.MySrvyDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="fileUploadDao" class="hk.gov.housingauthority.dao.FileUploadDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="sendEmailService" class="hk.gov.housingauthority.service.SendEmailServiceImpl">
+		<property name="srvyPptDao" ref="srvyPptDao"></property>
+		<property name="sysCnfgDao" ref="sysCnfgDao"></property>
+		<property name="srvyEmailHistDao" ref="srvyEmailHistDao"></property>
+		<property name="srvyAdtnInfoDao" ref="srvyAdtnInfoDao"></property>
+	</bean>
+	<bean id="sysCnfgService" class="hk.gov.housingauthority.service.SysCnfgServiceImpl">
+		<property name="sysCnfgDao" ref="sysCnfgDao"></property>
+	</bean>
+	<bean id="userService" class="hk.gov.housingauthority.service.UserServiceImpl">
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+	<bean id="coordinatorService" class="hk.gov.housingauthority.service.CoordinatorServiceImpl">
+		<property name="coordinatorDao" ref="coordinatorDao"></property>
+	</bean>
+	<bean id="srvyGrpService" class="hk.gov.housingauthority.service.SrvyGrpServiceImpl">
+		<property name="srvyGrpDao" ref="srvyGrpDao"></property>
+	</bean>
+	<bean id="srvyTmplService" class="hk.gov.housingauthority.service.SrvyTmplServiceImpl">
+		<property name="srvyTmplDao" ref="srvyTmplDao"></property>
+	</bean>
+	<bean id="srvyRecService" class="hk.gov.housingauthority.service.SrvyRecServiceImpl">
+		<property name="srvyRecDao" ref="srvyRecDao"></property>
+	</bean>
+	<bean id="srvyEmailTmplService"
+		class="hk.gov.housingauthority.service.SrvyEmailTmplServiceImpl">
+		<property name="srvyEmailTmplDao" ref="srvyEmailTmplDao"></property>
+	</bean>
+	<bean id="srvyAdtnInfoService" class="hk.gov.housingauthority.service.SrvyAdtnInfoServiceImpl">
+		<property name="srvyAdtnInfoDao" ref="srvyAdtnInfoDao"></property>
+	</bean>
+	<bean id="srvyEmailHistService"
+		class="hk.gov.housingauthority.service.SrvyEmailHistServiceImpl">
+		<property name="srvyEmailHistDao" ref="srvyEmailHistDao"></property>
+	</bean>
+	<bean id="srvyPptService" class="hk.gov.housingauthority.service.SrvyPptServiceImpl">
+		<property name="srvyPptDao" ref="srvyPptDao"></property>
+	</bean>
+	<bean id="exportService" class="hk.gov.housingauthority.service.ExportServiceImpl">
+		<property name="srvyPptDao" ref="srvyPptDao"></property>
+		<property name="srvyTmplDao" ref="srvyTmplDao"></property>
+	</bean>
+	<bean id="mySrvyService" class="hk.gov.housingauthority.service.MySrvyServiceImpl">
+		<property name="mySrvyDao" ref="mySrvyDao"></property>
+	</bean>
+	<bean id="uploadService" class="hk.gov.housingauthority.service.FileUploadServiceImpl">
+		<property name="fileUploadDao" ref="fileUploadDao"></property>
+		<property name="srvyPptDao" ref="srvyPptDao"></property>
+		<property name="userDao" ref="userDao"></property>
+	</bean>
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url"
+			value="jdbc:sqlserver://DESKTOP-RJ642UP;DataBaseName=ESURVEY_UAT;" />
+		<property name="username" value="esurvey" />
+		<property name="password" value="passwd01" />
+	</bean>
+	<bean id="sysProp" class="hk.gov.housingauthority.model.Properties">	
+		<property name="hashMap">
+			<map>
+				<!-- entry key="URL_LOGIN" value="https://dwsli04.housingauthority.gov.hk:444/esurvey_jct" /-->
+				<!--entry key="URL_LOGIN" value="https://ehousing-uat.housingauthority.gov.hk/esy_jct" /-->
+				<!--entry key="URL_LOGIN" value="http://localhost:5080/esurvey/" /-->
+				<entry key="URL_LOGOUT" value="https://ehousing-uat.housingauthority.gov.hk/" />
+				<entry key="URL_LOGIN" value="http://localhost:8080"/>
+				<entry key="IS_LOCAL_TEST" value="TRUE" />
+			</map>
+		</property>
+	</bean>
+</beans>
