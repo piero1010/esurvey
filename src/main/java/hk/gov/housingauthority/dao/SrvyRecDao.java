@@ -14,6 +14,8 @@ public interface SrvyRecDao {
 	
 	public int updateSrvyRec(SrvyRec srvyRec);
 	
+	public int deleteSrvyRec(int srvyRecId);
+	
 	public int cloneSrvyRec(SrvyRec srvyRec);
 	
 	public SrvyRec getSrvyRecByID(int srvyRecId);

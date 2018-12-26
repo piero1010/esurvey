@@ -85,6 +85,11 @@ public class SrvyRecServiceImpl implements SrvyRecService {
 		return srvyRecDao.cloneSrvyRec(srvyRec);
 	}
 
+	@Override
+	public int deleteSrvyRec(int srvyRecId) {
+		return	srvyRecDao.deleteSrvyRec(srvyRecId);
+	}
+
 	//public ArrayList<ResultMySrvyRec> searchMySrvyRec(QueryMySrvyRec queryMySrvyRec){
 	//	return srvyRecDao.searchMySrvyRec(queryMySrvyRec);
 	//}

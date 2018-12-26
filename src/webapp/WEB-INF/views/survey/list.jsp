@@ -68,6 +68,7 @@
 									<button type="button" disabled="true" id="editButton" class="btn btn-primary btn-sm"  style="margin-right: 10px;"><i class="fas fa-edit"></i> Edit</button>
 									<button type="button" disabled="true" id="cloneButton" class="btn btn-primary btn-sm"  style="margin-right: 10px;"><i class="fas fa-clone"></i> Clone</button>
 									<button type="button" disabled="true" id="dataExportButton" class="btn btn-primary btn-sm"  style="margin-right: 10px;"><i class="fas fa-file-export"></i> Data Export</button>
+									<button type="button" disabled="true" id="deleteButton" class="btn btn-danger btn-sm"  style="margin-right: 10px;"><i class="fas fa-trash"></i> Delete</button>
 									<button type="button" id="searchButton" class="btn btn-primary btn-sm float-right"><i class="fas fa-search"></i> Search</button>
 								</div>
 							</div>
@@ -184,20 +185,32 @@
 				$("#dataExportButton").prop("disabled", true);
 	            $("#cloneButton").prop("disabled", true);
 	            $("#editButton").prop("disabled", true);
+	            $("#deleteButton").prop("disabled", true);
 			});
 			
 			$('#resultTable tbody').on( 'click', 'tr', function () {
+				var d = table.row(this).data();
 				if ($(this).hasClass('selected') ) {
 		            $(this).removeClass('selected');
 		            $("#dataExportButton").prop("disabled", true);
 		            $("#cloneButton").prop("disabled", true);
 		            $("#editButton").prop("disabled", true);
+		            $("#deleteButton").prop("disabled", true);
 		        } else {
 		            table.$('tr.selected').removeClass('selected');
 		            $(this).addClass('selected');
 		            $("#dataExportButton").prop("disabled", false);
 		            $("#cloneButton").prop("disabled", false);
 		            $("#editButton").prop("disabled", false);
+		            try{
+		            	if("Prepare"==d[5] || "Trial-Run"==d[5] ){
+		            		$("#deleteButton").prop("disabled", false);
+		            	}else{
+		            		$("#deleteButton").prop("disabled", true);
+		            	}
+		            }catch(ex){
+		            	$("#deleteButton").prop("disabled", true);
+		            }
 		        }
 		    });
 			
@@ -211,6 +224,31 @@
 				var idx = table.cell('.selected', 0).index();
 				var d = table.row( idx.row ).data();
 				$.redirect('${basePath}/survey/modify/', {'id': d[0]});
+		    });
+			
+			$('#deleteButton').on( 'click', function () {
+				$("#deleteButton").prop("disabled", true);
+				confirmModal('System message','Do you want to delete this survey?',function(){
+					var idx = table.cell('.selected', 0).index();
+					var d = table.row( idx.row ).data();
+					$.ajax({
+						  type: "POST",
+						  url: "${basePath}/survey/deleteSurvey",
+						  data: {srvyRecId: d[0]},
+						  success: function(data){
+							data=jQuery.parseJSON(data);					
+							modal("System message",data.message,function(){
+								if(data.success=="true"){
+									table.draw();
+								}
+							});
+						  	$("#deleteButton").prop("disabled", false);
+						  },error: function(data){
+							modal("System message","System is busy, please try again.");
+						  	$("#deleteButton").prop("disabled", false);
+						  }, timeout: 10000    
+						});
+				},function(){$("#deleteButton").prop("disabled", false);});
 		    });
 
 			$('#searchButton').on( 'click', function () {

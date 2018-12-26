@@ -400,13 +400,13 @@ tr[role=row] td{padding:1px !important;}
 				}
 				if(e.target.id=="participant-tab" && participantTable!=null){
 					if($('#srvyPptCatg\\.srvyPptCatgId').val()=='3'){
-				       participantTable.column(10).visible(true);
 				       participantTable.column(11).visible(true);
 				       participantTable.column(12).visible(true);
+				       participantTable.column(13).visible(true);
 					}else{
-					   participantTable.column(10).visible(false);
-				       participantTable.column(11).visible(false);
+					   participantTable.column(11).visible(false);
 				       participantTable.column(12).visible(false);
+				       participantTable.column(13).visible(false);
 					}			
 				}
 			});

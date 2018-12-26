@@ -250,6 +250,45 @@ public class SrvyController extends ViewController {
 		jsonObject = new JSONObject(map);
 		return jsonObject.toString();
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/survey/deleteSurvey", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
+	public String deleteSurvey(@RequestParam Map<String, Object> param) {
+		JSONObject jsonObject = null;
+		Map<String, String> map = new HashMap<String, String>();
+		if(CommonFunction.getSsnISSrvyCoor()!=true){
+			map.put("success", "false");
+			map.put("message", "You do not have permission to use this function. Please contact system administrator if necessary.");
+			jsonObject = new JSONObject(map);
+			return jsonObject.toString();
+		}else if(param.get("srvyRecId")==null) {
+			map.put("success", "false");
+			map.put("message", "Please select a survey to delete.");
+			jsonObject = new JSONObject(map);
+			return jsonObject.toString();
+		}else {
+			SrvyRecService srvyRecService = (SrvyRecService) context.getBean("srvyRecService");
+			SrvyRec srvyRec = srvyRecService.getSrvyRecByID(Integer.parseInt((String) param.get("srvyRecId")));
+			SrvyTmpl srvyTmpl =srvyRec.getSrvyTmpl();
+			if(!CommonFunction.getSsnUserSrvyGrpArr().contains(srvyTmpl.getSrvyGrp().getSrvyGrpId().toString())) {
+				map.put("success", "false");
+				map.put("message", "You do not have permission to delete this survey.");
+				jsonObject = new JSONObject(map);
+				return jsonObject.toString();
+			}else if(srvyRec.getSrvySts().getSrvyStsId()==Constant.SURVEY_STATUS_PUBLISHED || srvyRec.getSrvySts().getSrvyStsId()==Constant.SURVEY_STATUS_COMPLETED) {
+				map.put("success", "false");
+				map.put("message", "The survey has been published and cannot be deleted.");
+				jsonObject = new JSONObject(map);
+				return jsonObject.toString();
+			}else {
+				srvyRecService.deleteSrvyRec(Integer.parseInt((String) param.get("srvyRecId")));
+				map.put("success", "true");
+				map.put("message", "The survey has been deleted successfully.");
+				jsonObject = new JSONObject(map);
+				return jsonObject.toString();
+			}
+		}
+	}
 
 	@ResponseBody
 	@RequestMapping(value = "/survey/cloneSurvey", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
