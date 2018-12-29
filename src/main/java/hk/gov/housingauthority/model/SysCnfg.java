@@ -15,7 +15,7 @@ public class SysCnfg extends Record{
 	private String sysCnfgDesc;
 	
 	@NotEmpty(message = "The \"Value\" is mandatory.")
-	@Size(max=50, message = "The \"Value\" must be less than or equal to 500 characters.")
+	@Size(max=2000, message = "The \"Value\" must be less than or equal to 2000 characters.")
 	private String sysCnfgVal;
 	
 	@NotEmpty(message = "The \"Group\" is mandatory.")
@@ -69,6 +69,6 @@ public class SysCnfg extends Record{
 		this.lastRecTxnDate = lastRecTxnDate;
 	}
 	public String toJsonString() {
-		return "[\"" + this.getSysCnfgId() + "\",\"" + this.getSysCnfgVal() + "\",\"" + this.getSysCnfgGrp() + "\",\"" + this.getSysCnfgDesc() + "\"]";
+		return "[\"" + this.getSysCnfgId() + "\",\"" + (this.getSysCnfgVal()!=null?this.getSysCnfgVal().replaceAll("\"","\\\\\""):"") + "\",\"" + this.getSysCnfgGrp() + "\",\"" + this.getSysCnfgDesc() + "\"]";
 	}
 }

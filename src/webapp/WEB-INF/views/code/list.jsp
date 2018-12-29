@@ -158,7 +158,7 @@
 				    "url": "${basePath}/code/listCode/",
 				    "type": "POST"
 				},
-				"order": [[ 0, "desc" ]],
+				"order": [[ 2, "asc" ],[ 0, "asc" ]],
 				"serverSide" : true,
 				"processing": true,
 				"pageLength": 20,

@@ -45,6 +45,7 @@ import hk.gov.housingauthority.model.SrvyEmailTmpl;
 import hk.gov.housingauthority.model.SrvyPpt;
 import hk.gov.housingauthority.model.SrvyRec;
 import hk.gov.housingauthority.model.SrvyTmpl;
+import hk.gov.housingauthority.model.SysCnfg;
 import hk.gov.housingauthority.model.User;
 import hk.gov.housingauthority.service.ExportService;
 import hk.gov.housingauthority.service.SrvyEmailHistService;
@@ -52,6 +53,7 @@ import hk.gov.housingauthority.service.SrvyEmailTmplService;
 import hk.gov.housingauthority.service.SrvyPptService;
 import hk.gov.housingauthority.service.SrvyRecService;
 import hk.gov.housingauthority.service.SrvyTmplService;
+import hk.gov.housingauthority.service.SysCnfgService;
 import hk.gov.housingauthority.service.UserService;
 import hk.gov.housingauthority.util.CommonFunction;
 import hk.gov.housingauthority.util.Constant;
@@ -175,22 +177,45 @@ public class SrvyController extends ViewController {
 			SrvyRecService srvyRecService = (SrvyRecService) context.getBean("srvyRecService");
 			UserService userService = (UserService) context.getBean("userService");
 			SrvyEmailTmplService srvyEmailTmplService = (SrvyEmailTmplService) context.getBean("srvyEmailTmplService");
+			SysCnfgService sysCnfgService = (SysCnfgService) context.getBean("sysCnfgService");
+			HashMap<String, SysCnfg> sysCnfgHashMap = sysCnfgService.getHashMapByGroup("MAILTMPL");
+			
 			srvyRec.getCoor().setUserId(CommonFunction.getSsnUserId());
 			User user = userService.getUserById(CommonFunction.getSsnUserId());
 			
 			srvyRec.setCreDate(new Date());
 			int srvyRecId = srvyRecService.insertSrvyRec(srvyRec);
+			
+			/* set default invitation template */
 			SrvyEmailTmpl srvyEmailTmpl = new SrvyEmailTmpl();
 			srvyEmailTmpl.setSrvyRecId(srvyRecId);
 			srvyEmailTmpl.setEmailType(Constant.EMAIL_TYPE_INVITATION);
-			srvyEmailTmpl.setEmailSubj("Survey Invitation - #SURVEY_TITLE#");
-			srvyEmailTmpl.setEmailCntn("<div>Dear&nbsp;#PARTICIPANT_NAME#,</div><div><br></div><div>We're conducting a survey and your input would be appreciated. Click the link below to start the survey. Thank you for your participation!</div><div><br></div><div> #SURVEY_URL# <br></div><div><br></div><div><span style=\"font-size: 1rem; display: inline !important;\">Regards,</span><br></div><div><span style=\"display: inline !important;\">"+user.getUserName()+"<br></span></div><div><br></div><div><br></div>");
+			if(sysCnfgHashMap!=null && sysCnfgHashMap.get("INVITATION_SUBJECT")!=null) {
+				srvyEmailTmpl.setEmailSubj(sysCnfgHashMap.get("INVITATION_SUBJECT").getSysCnfgVal().replaceAll("#COORDINATOR_NAME#", user.getUserName()));
+			}else {
+				srvyEmailTmpl.setEmailSubj("");
+			}
+			if(sysCnfgHashMap!=null && sysCnfgHashMap.get("INVITATION_CONTENT")!=null) {
+				srvyEmailTmpl.setEmailCntn(sysCnfgHashMap.get("INVITATION_CONTENT").getSysCnfgVal().replaceAll("#COORDINATOR_NAME#", user.getUserName()));
+			}else {
+				srvyEmailTmpl.setEmailCntn("");
+			}	
 			srvyEmailTmplService.insertEmailTmpl(srvyEmailTmpl);
+			
+			/* set default reminder template */
 			srvyEmailTmpl = new SrvyEmailTmpl();
 			srvyEmailTmpl.setSrvyRecId(srvyRecId);
 			srvyEmailTmpl.setEmailType(Constant.EMAIL_TYPE_REMINDER);
-			srvyEmailTmpl.setEmailSubj("Survey Reminder - #SURVEY_TITLE#");
-			srvyEmailTmpl.setEmailCntn("<div>Dear&nbsp;#PARTICIPANT_NAME#,</div><div><br></div><div>We're conducting a survey and your input would be appreciated. Click the link below to start the survey. Thank you for your participation!</div><div><br></div><div> #SURVEY_URL# <br></div><div><br></div><div><span style=\"font-size: 1rem; display: inline !important;\">Regards,</span><br></div><div><span style=\"display: inline !important;\">"+user.getUserName()+"<br></span></div><div><br></div><div><br></div>");
+			if(sysCnfgHashMap!=null && sysCnfgHashMap.get("REMINDER_SUBJECT")!=null) {
+				srvyEmailTmpl.setEmailSubj(sysCnfgHashMap.get("REMINDER_SUBJECT").getSysCnfgVal().replaceAll("#COORDINATOR_NAME#", user.getUserName()));
+			}else {
+				srvyEmailTmpl.setEmailSubj("");
+			}
+			if(sysCnfgHashMap!=null && sysCnfgHashMap.get("REMINDER_CONTENT")!=null) {
+				srvyEmailTmpl.setEmailCntn(sysCnfgHashMap.get("REMINDER_CONTENT").getSysCnfgVal().replaceAll("#COORDINATOR_NAME#", user.getUserName()));
+			}else {
+				srvyEmailTmpl.setEmailCntn("");
+			}			
 			srvyEmailTmplService.insertEmailTmpl(srvyEmailTmpl);
 			if (Constant.SURVEY_PARTICIPANT_CATEGORY_WHOLE_DIVISION == srvyRec.getSrvyPptCatg().getSrvyPptCatgId()) {
 				SrvyPptService srvyPptService = (SrvyPptService) context.getBean("srvyPptService");

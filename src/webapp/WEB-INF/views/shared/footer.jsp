@@ -91,6 +91,11 @@
 	</div>
 </div>
 <script>
+var okCallback;
+var canelCallback;
+var yesCallback;
+var noCallback;
+
 var called= false;
 String.prototype.endsWith = function(pattern) {
     var d = this.length - pattern.length;
@@ -106,28 +111,21 @@ function isActive(){
 		success: function(data){
 			data=jQuery.parseJSON(data);
 			if(data.message=="warning"){
-				console.log("timeoutModal()");
 				timeoutModal(data.timeLeft);
 			}else if(data.message=="expiry"){
-				try{
-					console.log("clearInterval(interval);");
+				try{					
 					clearInterval(interval);
 				}catch(ex){console.log(ex);}
-				try{
-					console.log("clearInterval(interval2);");
+				try{					
 					clearInterval(interval2);
-				}catch(ex){console.log(ex);}
-				console.log("expiryModal()");
+				}catch(ex){console.log(ex);}				
 				expiryModal();
 			}else{
-				try{
-					console.log("clearInterval(interval2);");
+				try{					
 					clearInterval(interval2);
-				}catch(ex){console.log(ex);}
+				}catch(ex){}
 				$('#timeoutModal').modal("hide");
-			}
-			console.log(data.message);
-			console.log(data.timeLeft);
+			}			
 		}
 	});
 }
@@ -135,8 +133,7 @@ $(document).ready(function() {
 	interval = setInterval(function(){isActive();}, 18000);/* start checking if idea more than 5 seconds */
 });
 $(document).bind("ajaxSuccess", function( event, xhr, settings ) {
-	if(!settings.url.endsWith("isActive")){/* if ajax called reset timer */
-		console.log("if(!settings.url.endsWith(isActive))");
+	if(!settings.url.endsWith("isActive")){/* if ajax called reset timer */		
 		if(interval!=null){
 			clearInterval(interval);
 			interval = setInterval(function(){isActive();}, 18000);
@@ -224,58 +221,58 @@ function expiryModal(){
 		});	
 	});	
 }
-function confirmModal(title,message,okCallback,canelCallback){
+
+function confirmModal(title,message,thisOkCallback,thisCanelCallback){
 	title = title || '';
 	message = message || '';
-	okCallback = okCallback || '';
-	canelCallback = canelCallback || '';
+	okCallback = thisOkCallback || '';
+	canelCallback = thisCanelCallback || '';
 	$("#confirmModal .modal-title").text(title);
 	$("#confirmModal .modal-body").text("");
 	$("#confirmModal .modal-body").append(message);
-	$("#confirmModal").modal('show');
-	$('#confirmModalOkButton').on('click', function (e) {
-		$("#confirmModalOkButton").prop("disabled", true);
-		if(okCallback!=""){
-			okCallback();
-			setTimeout(function(){$("#confirmModalOkButton").prop("disabled", false);}, 500);
-			$('#confirmModal').modal('hide');
-		}
-	});
-	
-	$('#confirmModalCancelButton').on('click', function (e) {
-		if(canelCallback!=""){
-			canelCallback();
-		}
-	});
+	$("#confirmModal").modal('show');	
 }
-function yesNoModal(title,message,yesCallback,noCallback,canelCallback){
+
+$('#confirmModalOkButton').on('click', function (e) {
+	$("#confirmModalOkButton").prop("disabled", true);
+	if(typeof okCallback === 'function' ){
+		okCallback();
+		setTimeout(function(){$("#confirmModalOkButton").prop("disabled", false);}, 500);
+		$('#confirmModal').modal('hide');
+	}
+});
+
+$('#confirmModalCancelButton').on('click', function (e) {
+	if(typeof canelCallback === 'function' ){
+		canelCallback();
+	}
+});
+function yesNoModal(title,message,thisYesCallback,thisNoCallback,thisCanelCallback){
 	title = title || '';
 	message = message || '';
-	yesCallback = yesCallback || '';
-	noCallback = noCallback || '';
-	canelCallback = canelCallback || '';
+	yesCallback = thisYesCallback || '';
+	noCallback = thisNoCallback || '';
+	canelCallback = thisCanelCallback || '';
 	$("#yesNoModal .modal-title").text(title);
 	$("#yesNoModal .modal-body").text("");
 	$("#yesNoModal .modal-body").append(message);
-	$("#yesNoModal").modal('show');
-	$('#yesNoModalYesButton').on('click', function (e) {
-		if(yesCallback!=""){
-			yesCallback();
-		}
-	});
-	
-	$('#yesNoModalNoButton').on('click', function (e) {
-		if(noCallback!=""){
-			noCallback();
-		}
-	});
-	
-	$('#yesNoModal').on('hidden.bs.modal', function (e) {
-		if(canelCallback!=""){
-			canelCallback();
-		}
-	});
+	$("#yesNoModal").modal('show');	
 }
+$('#yesNoModalYesButton').on('click', function (e) {
+	if(typeof yesCallback === 'function' ){
+		yesCallback();
+	}
+});
+$('#yesNoModalNoButton').on('click', function (e) {
+	if(typeof noCallback === 'function' ){
+		noCallback();
+	}
+});
+$('#yesNoModal').on('hidden.bs.modal', function (e) {
+	if(typeof canelCallback === 'function' ){
+		canelCallback();
+	}
+});
 function mlogout(){
 	confirmModal("System Message","Are you sure you want to logout?",
 	function () {
